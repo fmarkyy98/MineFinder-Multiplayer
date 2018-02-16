@@ -1,4 +1,6 @@
 
+import java.util.Random;
+
 public class Modell {
 
     int remainingmines = 51;
@@ -52,19 +54,34 @@ public class Modell {
     }
 
     private void generateMines(final int m) {
-
+        Random rnd = new Random();
+        for (int i = 0; i < m;) {
+            int x = rnd.nextInt(16);
+            int y = rnd.nextInt(16);
+            if (Minefield[x][y] != -1) {
+                Minefield[x][y] = -1;
+                i++;
+            }
+        }
     }
 
     private int valueAt(final int x, final int y) {
-        return 0;
+        if (x < 16 && x > -1 && y < 16 && y > -1) {
+            return Minefield[x][y];
+        }
+        return -2;
     }
 
     private int mineCountAround(final int x, final int y) {
-        return 0;
+        for (int i = x-1; i < x+2; i++) {
+            for (int j = 0; j < 10; j++) {
+                
+            }
+        }
     }
 
-    private void generateNumbers (){
-    
+    private void generateNumbers() {
+
     }
-    
+
 }
