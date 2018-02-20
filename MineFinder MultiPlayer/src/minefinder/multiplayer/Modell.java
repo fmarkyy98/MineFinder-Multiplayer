@@ -1,11 +1,12 @@
+package minefinder.multiplayer;
 
 import java.util.Random;
 
 public class Modell {
 
-    int remainingmines = 51;
-    int redscore, bluescore = 0;
-    int actualplayer = 0;
+    int remainingMines = 51;
+    int redScore, blueScore = 0;
+    int actualPlayer = 0;
 
     Integer[][] Minefield = new Integer[16][16];
     Boolean[][] MinefieldVisibilyty = new Boolean[16][16];
@@ -18,20 +19,20 @@ public class Modell {
 
     public void peek(final int x, final int y) {
         if (this.Minefield[x][y] == -1) {
-            this.remainingmines--;
-            if (this.actualplayer == 0) {
-                this.redscore++;
-                return;
+            this.remainingMines--;
+            if (this.actualPlayer == 0) {
+                this.redScore++;
+            } else if (this.actualPlayer == 1) {
+                this.blueScore++;
             }
-            this.bluescore++;
-            return;
         }
-        if (this.actualplayer == 0) {
-            this.actualplayer = 1;
-            return;
+
+        if (this.actualPlayer == 0) {
+            this.actualPlayer = 1;
+        } else if (this.actualPlayer == 1) {
+            this.actualPlayer = 0;
         }
-        this.actualplayer = 0;
-        observer.gameStateChanged(this.actualplayer, this.remainingmines, this.redscore, this.bluescore);
+        observer.gameStateChanged(this.actualPlayer, this.remainingMines, this.redScore, this.blueScore);
     }
 
     private void startRevealAt(final int x, final int y) {
@@ -41,7 +42,7 @@ public class Modell {
         if (MinefieldVisibilyty[x][y]) {
             return;
         }
-        observer.revealedField(x, y, this.Minefield[x][y], this.actualplayer);
+        observer.revealedField(x, y, this.Minefield[x][y], this.actualPlayer);
         if (Minefield[x][y] == 0) {
             for (int i = x - 1; i < x + 2; i++) {
                 for (int j = y - 1; j < y + 2; j++) {
@@ -73,15 +74,24 @@ public class Modell {
     }
 
     private int mineCountAround(final int x, final int y) {
-        for (int i = x-1; i < x+2; i++) {
+        int result = 0;
+        for (int i = x - 1; i < x + 2; i++) {
             for (int j = 0; j < 10; j++) {
-                
+                if (this.valueAt(i, j) == -1) {
+                    result++;
+                }
             }
         }
+        return result;
     }
 
     private void generateNumbers() {
-
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
+                if (this.valueAt(i, j) != -1) {
+                    Minefield[i][j] = mineCountAround(i, j);
+                }
+            }
+        }
     }
-
 }

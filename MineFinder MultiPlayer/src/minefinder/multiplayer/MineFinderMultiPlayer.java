@@ -5,27 +5,54 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class MineFinderMultiPlayer extends Application {
+public class MineFinderMultiPlayer extends Application implements Observer {
 
+        Modell modell = new Modell(this);
+    
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
+
+        Button button = new Button();
+        Label label = new Label();
+        GridPane gridPane = new GridPane();
+
+        button.setText("New Game");
+        button.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
+                //TODO
             }
         });
 
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        VBox vBox = new VBox();
+        vBox.getChildren().add(label);
+        vBox.getChildren().add(button);
+        vBox.getChildren().add(gridPane);
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
+                MineButton mineButton = new MineButton(i, j);
+                mineButton.setMinSize(50, 50);
+                gridPane.add(mineButton, j, i);
 
-        Scene scene = new Scene(root, 300, 250);
+                mineButton.setOnAction(new EventHandler<ActionEvent>() {
+
+                    @Override
+                    public void handle(ActionEvent event) {
+                        MineButton b = (MineButton) event.getSource();
+                        modell.peek (b.x, b.y);
+                    }
+                });
+            }
+        }
+
+        Scene scene = new Scene(vBox, 300, 250);
 
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
@@ -34,6 +61,16 @@ public class MineFinderMultiPlayer extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void revealedField(int x, int y, int value, int player) {
+       // button
+    }
+
+    @Override
+    public void gameStateChanged(int player, int remainingMines, int redScore, int blueScore) {
+         // label
     }
 
 }
