@@ -13,13 +13,14 @@ import javafx.stage.Stage;
 
 public class MineFinderMultiPlayer extends Application implements Observer {
 
-        Modell modell = new Modell(this);
-    
+    Modell modell = new Modell(this);
+    MineButton buttons[][] = new MineButton[16][16];
+    Label label;
+
     @Override
     public void start(Stage primaryStage) {
-
         Button button = new Button();
-        Label label = new Label();
+        label = new Label();
         GridPane gridPane = new GridPane();
 
         button.setText("New Game");
@@ -27,7 +28,7 @@ public class MineFinderMultiPlayer extends Application implements Observer {
 
             @Override
             public void handle(ActionEvent event) {
-                //TODO
+
             }
         });
 
@@ -38,7 +39,7 @@ public class MineFinderMultiPlayer extends Application implements Observer {
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 MineButton mineButton = new MineButton(i, j);
-                mineButton.setMinSize(50, 50);
+                mineButton.setMinSize(30, 30);
                 gridPane.add(mineButton, j, i);
 
                 mineButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -46,9 +47,10 @@ public class MineFinderMultiPlayer extends Application implements Observer {
                     @Override
                     public void handle(ActionEvent event) {
                         MineButton b = (MineButton) event.getSource();
-                        modell.peek (b.x, b.y);
+                        modell.peek(b.x, b.y);
                     }
                 });
+                buttons[i][j] = mineButton;
             }
         }
 
@@ -65,12 +67,13 @@ public class MineFinderMultiPlayer extends Application implements Observer {
 
     @Override
     public void revealedField(int x, int y, int value, int player) {
-       // button
+        buttons[x][y].setText("" + value);
+        buttons[x][y].setDisable(true);
     }
 
     @Override
     public void gameStateChanged(int player, int remainingMines, int redScore, int blueScore) {
-         // label
+        label.setText("" + player + ", " + remainingMines + ", " + redScore + ", " + blueScore);
     }
 
 }

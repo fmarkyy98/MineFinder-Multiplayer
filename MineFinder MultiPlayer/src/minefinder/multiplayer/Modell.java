@@ -8,13 +8,15 @@ public class Modell {
     int redScore, blueScore = 0;
     int actualPlayer = 0;
 
-    Integer[][] Minefield = new Integer[16][16];
-    Boolean[][] MinefieldVisibilyty = new Boolean[16][16];
+    int[][] Minefield = new int[16][16];
+    boolean[][] MinefieldVisibilyty = new boolean[16][16];
 
     Observer observer;
 
     public Modell(Observer observer) {
         this.observer = observer;
+        generateMines(51);
+        generateNumbers();
     }
 
     public void peek(final int x, final int y) {
@@ -25,6 +27,9 @@ public class Modell {
             } else if (this.actualPlayer == 1) {
                 this.blueScore++;
             }
+             observer.revealedField(x, y, this.Minefield[x][y], this.actualPlayer);
+        } else {
+            startRevealAt(x, y);
         }
 
         if (this.actualPlayer == 0) {
@@ -42,11 +47,14 @@ public class Modell {
         if (MinefieldVisibilyty[x][y]) {
             return;
         }
+        
+        MinefieldVisibilyty[x][y] = true;
         observer.revealedField(x, y, this.Minefield[x][y], this.actualPlayer);
+        
         if (Minefield[x][y] == 0) {
             for (int i = x - 1; i < x + 2; i++) {
                 for (int j = y - 1; j < y + 2; j++) {
-                    if (!MinefieldVisibilyty[i][j]) {
+                    if (!(i == x && j == y)) {
                         startRevealAt(i, j);
                     }
                 }
@@ -76,7 +84,7 @@ public class Modell {
     private int mineCountAround(final int x, final int y) {
         int result = 0;
         for (int i = x - 1; i < x + 2; i++) {
-            for (int j = 0; j < 10; j++) {
+            for (int j = y - 1; j < y + 2; j++) {
                 if (this.valueAt(i, j) == -1) {
                     result++;
                 }
